@@ -36,6 +36,10 @@ void interruptChange()
 
 void setup() {
   Serial.begin(9600);
+  Serial.println("co2 sensor beginning...");
+  pinMode(SENSOR_DATA_PIN, INPUT);
+  attachInterrupt(INTERRUPT_NUMBER, interruptChange, CHANGE);
+  delay(1000);
     //Initialize the chip to detect if it can communicate properly.
   while (sht3x.begin() != 0) {
     Serial.println("Failed to initialize the chip, please confirm the chip connection");
@@ -51,9 +55,7 @@ void setup() {
   }
   Serial.println("------------------Read data in cycle measurement mode-----------------------");
   delay(1000);
-  Serial.println("co2 sensor beginning...");
-  pinMode(SENSOR_DATA_PIN, INPUT);
-  attachInterrupt(INTERRUPT_NUMBER, interruptChange, CHANGE);
+  
 }
 
 
@@ -70,21 +72,15 @@ void loop() {
     }
     else if (pwmHighVal_ms < 998.00){
       float concentration = (pwmHighVal_ms - 2) * 5;
-      // Print pwmHighVal_ms
-//      Serial.print("pwmHighVal_ms:");
-//      Serial.print(pwmHighVal_ms);
-//      Serial.println("ms");
       //Print CO2 concentration
       Serial.print("C");
       Serial.println(concentration);
     }else{
 //      Serial.println("Beyond the maximum range : 398~4980ppm");
     }
+      Serial.print("T");
+      Serial.println(sht3x.getTemperatureC());
+      Serial.print("H");
+      Serial.println(sht3x.getHumidityRH());
   }
-  Serial.print("T");
-  Serial.println(sht3x.getTemperatureC());
-  Serial.print("H");
-  Serial.println(sht3x.getHumidityRH());
-  
-  delay(2000); 
 }
